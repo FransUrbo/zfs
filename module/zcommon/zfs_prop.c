@@ -409,6 +409,15 @@ zfs_prop_init(void)
 	    "receive_resume_token",
 	    NULL, PROP_READONLY, ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME,
 	    "<string token>", "RESUMETOK");
+	zprop_register_string(ZFS_PROP_ENCRYPTION_ROOT, "encryptionroot", NULL,
+	    PROP_READONLY, ZFS_TYPE_DATASET, "<filesystem | volume>",
+	    "ENCROOT");
+	zprop_register_string(ZFS_PROP_KEYLOCATION, "keylocation",
+	    "none", PROP_DEFAULT, ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME,
+	    "prompt | <file URI>", "KEYLOCATION");
+	zprop_register_string(ZFS_PROP_SHAREISCSI, "shareiscsi", "off",
+	    PROP_DEFAULT, ZFS_TYPE_VOLUME, "on | off | ietadm/tgtadm(8)"
+	    " options", "SHAREISCSI");
 
 	/* readonly number properties */
 	zprop_register_number(ZFS_PROP_USED, "used", 0, PROP_READONLY,

@@ -118,7 +118,8 @@ struct zpool_handle {
 typedef enum {
 	PROTO_NFS = 0,
 	PROTO_SMB = 1,
-	PROTO_END = 2
+	PROTO_ISCSI = 2,
+	PROTO_END = 3
 } zfs_share_proto_t;
 
 /*
@@ -128,7 +129,8 @@ typedef enum {
 typedef enum {
 	SHARED_NOT_SHARED = 0x0,
 	SHARED_NFS = 0x2,
-	SHARED_SMB = 0x4
+	SHARED_SMB = 0x4,
+	SHARED_ISCSI = 0x8
 } zfs_share_type_t;
 
 #define	CONFIG_BUF_MINSIZE	262144
