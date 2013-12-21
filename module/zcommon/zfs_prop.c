@@ -456,6 +456,9 @@ zfs_prop_init(void)
 	zprop_register_string(ZFS_PROP_KEYLOCATION, "keylocation",
 	    "none", PROP_DEFAULT, ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME,
 	    "prompt | <file URI>", "KEYLOCATION");
+	zprop_register_string(ZFS_PROP_SHAREISCSI, "shareiscsi", "off",
+	    PROP_DEFAULT, ZFS_TYPE_VOLUME, "on | off | ietadm/tgtadm(8)"
+	    " options", "SHAREISCSI");
 
 	/* readonly number properties */
 	zprop_register_number(ZFS_PROP_USED, "used", 0, PROP_READONLY,

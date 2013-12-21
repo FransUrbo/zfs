@@ -359,8 +359,7 @@ get_linux_shareopts(const char *shareopts, char **plinux_opts)
 //		/* 'else if(strcmp(shareopts, "ro\0") == 0)': Doesn't work if there's ONLY a 'ro'. */
 	}
 
-	rc = foreach_shareopt(shareopts, get_linux_shareopts_cb,
-	    plinux_opts);
+	rc = foreach_shareopt(shareopts, get_linux_shareopts_cb, plinux_opts);
 	if (rc != SA_OK) {
 		free(*plinux_opts);
 		*plinux_opts = NULL;
