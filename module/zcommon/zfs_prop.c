@@ -379,6 +379,9 @@ zfs_prop_init(void)
 	    "receive_resume_token",
 	    NULL, PROP_READONLY, ZFS_TYPE_FILESYSTEM | ZFS_TYPE_VOLUME,
 	    "<string token>", "RESUMETOK");
+	zprop_register_string(ZFS_PROP_SHAREISCSI, "shareiscsi", "off",
+	    PROP_DEFAULT, ZFS_TYPE_VOLUME, "on | off | ietadm/tgtadm(8)"
+	    " options", "SHAREISCSI");
 
 	/* readonly number properties */
 	zprop_register_number(ZFS_PROP_USED, "used", 0, PROP_READONLY,
