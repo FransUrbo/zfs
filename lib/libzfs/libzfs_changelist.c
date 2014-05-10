@@ -97,7 +97,8 @@ changelist_prefix(prop_changelist_t *clp)
 	int ret = 0;
 
 	if (clp->cl_prop != ZFS_PROP_MOUNTPOINT &&
-	    clp->cl_prop != ZFS_PROP_SHARESMB)
+	    clp->cl_prop != ZFS_PROP_SHARESMB &&
+	    clp->cl_prop != ZFS_PROP_SHAREAOE)
 		return (0);
 
 	for (cn = uu_list_first(clp->cl_list); cn != NULL;
@@ -134,6 +135,15 @@ changelist_prefix(prop_changelist_t *clp)
 			default:
 				break;
 			}
+		} else if (ZFS_IS_VOLUME(cn->cn_handle) && cn->cn_shared &&
+			   clp->cl_realprop == ZFS_PROP_NAME) {
+			/* If this was a rename, unshare the zvol */
+
+			/* XXX: Sometimes (quite often actually), the rename
+			 *      IOCTL that follows hangs (because of this?
+			 *      - works without it, but the old share won't
+			 *  get removed/unshared)... */
+			(void) zfs_unshare_aoe(cn->cn_handle, NULL);
 		}
 	}
 
@@ -195,6 +205,7 @@ changelist_postfix(prop_changelist_t *clp)
 
 		boolean_t sharenfs;
 		boolean_t sharesmb;
+		boolean_t shareaoe;
 		boolean_t mounted;
 
 		/*
@@ -211,9 +222,6 @@ changelist_postfix(prop_changelist_t *clp)
 
 		zfs_refresh_properties(cn->cn_handle);
 
-		if (ZFS_IS_VOLUME(cn->cn_handle))
-			continue;
-
 		/*
 		 * Remount if previously mounted or mountpoint was legacy,
 		 * or sharenfs or sharesmb  property is set.
@@ -223,6 +231,10 @@ changelist_postfix(prop_changelist_t *clp)
 		    B_FALSE) == 0) && (strcmp(shareopts, "off") != 0));
 
 		sharesmb = ((zfs_prop_get(cn->cn_handle, ZFS_PROP_SHARESMB,
+		    shareopts, sizeof (shareopts), NULL, NULL, 0,
+		    B_FALSE) == 0) && (strcmp(shareopts, "off") != 0));
+
+		shareaoe = ((zfs_prop_get(cn->cn_handle, ZFS_PROP_SHAREAOE,
 		    shareopts, sizeof (shareopts), NULL, NULL, 0,
 		    B_FALSE) == 0) && (strcmp(shareopts, "off") != 0));
 
@@ -244,14 +256,10 @@ changelist_postfix(prop_changelist_t *clp)
 		 * if the filesystem is currently shared, so that we can
 		 * adopt any new options.
 		 */
-		if (sharenfs && mounted)
-			errors += zfs_share_nfs(cn->cn_handle);
+		if (((sharenfs || sharesmb) && mounted) || shareaoe)
+			errors += zfs_share(cn->cn_handle);
 		else if (cn->cn_shared || clp->cl_waslegacy)
-			errors += zfs_unshare_nfs(cn->cn_handle, NULL);
-		if (sharesmb && mounted)
-			errors += zfs_share_smb(cn->cn_handle);
-		else if (cn->cn_shared || clp->cl_waslegacy)
-			errors += zfs_unshare_smb(cn->cn_handle, NULL);
+			errors += zfs_unshare(cn->cn_handle);
 	}
 
 	return (errors ? -1 : 0);
@@ -321,7 +329,8 @@ changelist_unshare(prop_changelist_t *clp, zfs_share_proto_t *proto)
 	int ret = 0;
 
 	if (clp->cl_prop != ZFS_PROP_SHARENFS &&
-	    clp->cl_prop != ZFS_PROP_SHARESMB)
+	    clp->cl_prop != ZFS_PROP_SHARESMB &&
+	    clp->cl_prop != ZFS_PROP_SHAREAOE)
 		return (0);
 
 	for (cn = uu_list_first(clp->cl_list); cn != NULL;
@@ -611,13 +620,15 @@ changelist_gather(zfs_handle_t *zhp, zfs_prop_t prop, int gather_flags,
 
 	if (clp->cl_prop != ZFS_PROP_MOUNTPOINT &&
 	    clp->cl_prop != ZFS_PROP_SHARENFS &&
-	    clp->cl_prop != ZFS_PROP_SHARESMB)
+	    clp->cl_prop != ZFS_PROP_SHARESMB &&
+	    clp->cl_prop != ZFS_PROP_SHAREAOE)
 		return (clp);
 
 	/*
 	 * If watching SHARENFS or SHARESMB then
 	 * also watch its companion property.
 	 */
+	/* TODO: add SHAREAOE ? */
 	if (clp->cl_prop == ZFS_PROP_SHARENFS)
 		clp->cl_shareprop = ZFS_PROP_SHARESMB;
 	else if (clp->cl_prop == ZFS_PROP_SHARESMB)

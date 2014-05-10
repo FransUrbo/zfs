@@ -1099,6 +1099,7 @@ badlabel:
 
 		case ZFS_PROP_SHARESMB:
 		case ZFS_PROP_SHARENFS:
+		case ZFS_PROP_SHAREAOE:
 			/*
 			 * For the mountpoint and sharenfs or sharesmb
 			 * properties, check if it can be set in a
@@ -1125,7 +1126,8 @@ badlabel:
 					    errbuf);
 					goto error;
 				} else if (prop == ZFS_PROP_SHARENFS ||
-				    prop == ZFS_PROP_SHARESMB) {
+                                           prop == ZFS_PROP_SHARESMB ||
+					   prop == ZFS_PROP_SHAREAOE) {
 					zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
 					    "'%s' cannot be set in "
 					    "a non-global zone"), propname);
@@ -1151,12 +1153,15 @@ badlabel:
 			 * property value is valid if it is sharenfs.
 			 */
 			if ((prop == ZFS_PROP_SHARENFS ||
-			    prop == ZFS_PROP_SHARESMB) &&
+			     prop == ZFS_PROP_SHARESMB ||
+			     prop == ZFS_PROP_SHAREAOE) &&
 			    strcmp(strval, "on") != 0 &&
 			    strcmp(strval, "off") != 0) {
 				zfs_share_proto_t proto;
 
-				if (prop == ZFS_PROP_SHARESMB)
+				if (prop == ZFS_PROP_SHAREAOE)
+					proto = PROTO_AOE;
+				else if (prop == ZFS_PROP_SHARESMB)
 					proto = PROTO_SMB;
 				else
 					proto = PROTO_NFS;
@@ -3824,6 +3829,14 @@ zfs_rename(zfs_handle_t *zhp, const char *target, boolean_t recursive,
 			(void) changelist_postfix(cl);
 	} else {
 		if (!recursive) {
+			/*
+			 * XXX: This 'removes' the old ZVOL name from the
+			 *      list, making changelist_postfix() not
+			 *      removing the old share, which leaves
+			 *      TWO shares - the old and the new!
+			 *
+			 *      But why does it work for NFS and SMB!?
+			 */
 			changelist_rename(cl, zfs_get_name(zhp), target);
 			ret = changelist_postfix(cl);
 		}
