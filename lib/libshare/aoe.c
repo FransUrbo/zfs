@@ -42,15 +42,146 @@
 
 static boolean_t aoe_available(void);
 static boolean_t aoe_is_share_active(sa_share_impl_t);
+static int aoe_get_shareopts(sa_share_impl_t, const char *, aoe_shareopts_t **);
 
 static sa_fstype_t *aoe_fstype;
+
+/*
+ * Simplified version of 'aoe-stat':
+
+  for dir in /sys/block//*e[0-9]*\.[0-9]*; do
+    test -r "$d/payload" && payload=yes	# ??
+    dev="${dir/*\!/}";
+    nif=`cat "$dir/netif"`;
+    sec=`cat "$dir/size"`
+    stt=`cat "$dir/state"`;
+    psize=$(((512000 * $sec) / (1000 * 1000 * 1000)))
+    psize=`printf "%04d\n" $psize | sed 's!\(...\)$!.\1!'`
+    printf '%10s %15sGB %6s %-5s %-14s\n' $dev $psize $nif $payload $stt
+  done
+*/
+
+/* TODO: This is an exact copy of iscsi.c:iscsi_read_sysfs_value() from #1099 */
+static int
+aoe_read_sysfs_value(char *path, char **value)
+{
+	int rc = SA_SYSTEM_ERR, buffer_len;
+	char buffer[255];
+	FILE *sysfs_file_fp = NULL;
+
+	/* Make sure that path and value is set */
+	assert(path != NULL);
+	if (!value)
+		return (rc);
+
+	/*
+	 * TODO:
+	 * If *value is not NULL we might be dropping allocated memory, assert?
+	 */
+	*value = NULL;
+
+#if DEBUG >= 2
+	fprintf(stderr, "aoe_read_sysfs_value: path=%s", path);
+#endif
+
+	sysfs_file_fp = fopen(path, "r");
+	if (sysfs_file_fp != NULL) {
+		if (fgets(buffer, sizeof (buffer), sysfs_file_fp)
+		    != NULL) {
+			/* Trim trailing new-line character(s). */
+			buffer_len = strlen(buffer);
+			while (buffer_len > 0) {
+			    buffer_len--;
+			    if (buffer[buffer_len] == '\r' ||
+				buffer[buffer_len] == '\n') {
+				buffer[buffer_len] = 0;
+			    } else
+				break;
+			}
+
+			*value = strdup(buffer);
+
+#if DEBUG >= 2
+			fprintf(stderr, ", value=%s", *value);
+#endif
+
+			/* Check that strdup() was successful */
+			if (*value)
+				rc = SA_OK;
+		}
+
+		fclose(sysfs_file_fp);
+	}
+
+#if DEBUG >= 2
+	fprintf(stderr, "\n");
+#endif
+	return (rc);
+}
 
 /*
  * Used internally by aoe_enable_share to enable sharing for a single host.
  */
 static int
-aoe_enable_share_one(const char *sharename, const char *sharepath)
+aoe_enable_share_one(sa_share_impl_t impl_share, const char *sharepath)
 {
+	char *argv[5], *shareopts, params_shelf[10], params_slot[10];
+	aoe_shareopts_t *opts;
+	int rc, ret;
+
+	opts = (aoe_shareopts_t *) malloc(sizeof (aoe_shareopts_t));
+	if (opts == NULL)
+		return (SA_NO_MEMORY);
+
+	/* Get any share options */
+	shareopts = FSINFO(impl_share, aoe_fstype)->shareopts;
+	rc = aoe_get_shareopts(impl_share, shareopts, &opts);
+	if (rc < 0) {
+		free(opts);
+		return (SA_SYSTEM_ERR);
+	}
+
+#ifdef DEBUG
+	fprintf(stderr, "aoe_enable_share_one_iet: shelf=%d, slot=%d, "
+		"netif=%s, sharepath=%s\n", opts->shelf, opts->slot,
+		opts->netif, impl_share->sharepath);
+#endif
+
+	ret = snprintf(params_shelf, sizeof (params_shelf), "%d", opts->shelf);
+	if (ret < 0 || ret >= sizeof (params_shelf)) {
+		free(opts);
+		return (SA_SYSTEM_ERR);
+	}
+
+	ret = snprintf(params_slot, sizeof (params_slot), "%d", opts->slot);
+	if (ret < 0 || ret >= sizeof (params_slot)) {
+		free(opts);
+		return (SA_SYSTEM_ERR);
+	}
+
+	/* vblade $shelf $slot $netif  /dev/zvol/$sharepath */
+	argv[0] = VBLADE_CMD_PATH;
+	argv[1] = (char *)params_shelf;
+	argv[2] = (char *)params_slot;
+	argv[3] = (char *)opts->netif;
+	argv[4] = (char *)sharepath;
+	argv[5] = NULL;
+
+#ifdef DEBUG
+	int i;
+	fprintf(stderr, "CMD: ");
+	for (i = 0; i < 7; i++)
+		fprintf(stderr, "%s ", argv[i]);
+	fprintf(stderr, "\n");
+#endif
+
+	rc = libzfs_run_process(argv[0], argv, STDERR_VERBOSE);
+	if (rc != 0) {
+		free(opts);
+		return (SA_SYSTEM_ERR);
+	}
+
+	return (SA_OK);
 }
 
 /*
@@ -59,6 +190,20 @@ aoe_enable_share_one(const char *sharename, const char *sharepath)
 static int
 aoe_enable_share(sa_share_impl_t impl_share)
 {
+	char *shareopts;
+
+	if (!aoe_available())
+		return (SA_SYSTEM_ERR);
+
+	shareopts = FSINFO(impl_share, aoe_fstype)->shareopts;
+	if (shareopts == NULL) /* on/off */
+		return (SA_SYSTEM_ERR);
+
+	if (strcmp(shareopts, "off") == 0)
+		return (SA_OK);
+
+	/* Magic: Enable (i.e., 'create new') share */
+	return (aoe_enable_share_one(impl_share, impl_share->sharepath));
 }
 
 /*
@@ -78,16 +223,86 @@ aoe_disable_share(sa_share_impl_t impl_share)
 }
 
 /*
+ * Validates share option(s).
+ */
+static int
+aoe_get_shareopts_cb(const char *key, const char *value, void *cookie)
+{
+	char *dup_value;
+	aoe_shareopts_t *opts = (aoe_shareopts_t *)cookie;
+
+	if (strcmp(key, "on") == 0)
+		return (SA_OK);
+
+	/* Verify all options */
+	if (strcmp(key, "shelf") != 0 &&
+	    strcmp(key, "slot")  != 0 &&
+	    strcmp(key, "netif") != 0)
+		return (SA_SYNTAX_ERR);
+
+	dup_value = strdup(value);
+	if (dup_value == NULL)
+		return (SA_NO_MEMORY);
+
+	/* Get share option values */
+	if (strcmp(key, "shelf") == 0)
+		opts->shelf = atoi(dup_value);
+	if (strcmp(key, "slot") == 0)
+		opts->slot = atoi(dup_value);
+	if (strcmp(key, "netif") == 0) {
+		strncpy(opts->netif, dup_value, sizeof (opts->netif));
+		opts->netif [sizeof (opts->netif)-1] = '\0';
+	}
+
+	return (SA_OK);
+}
+
+/*
+ * Takes a string containing share options (e.g. "shelf=9,slot=0,netif=eth0")
+ * and converts them to a NULL-terminated array of options.
+ */
+static int
+aoe_get_shareopts(sa_share_impl_t impl_share, const char *shareopts,
+		    aoe_shareopts_t **opts)
+{
+	int rc;
+	aoe_shareopts_t *new_opts;
+
+	assert(opts != NULL);
+	*opts = NULL;
+
+	new_opts = (aoe_shareopts_t *) calloc(sizeof (aoe_shareopts_t), 1);
+	if (new_opts == NULL)
+		return (SA_NO_MEMORY);
+
+	/* Set defaults */
+	new_opts->shelf = AOE_DEFAULT_SHELF;
+	new_opts->slot  = AOE_DEFAULT_SLOT;
+	strncpy(new_opts->netif, AOE_DEFAULT_IFACE, strlen(AOE_DEFAULT_IFACE));
+	*opts = new_opts;
+
+	rc = foreach_shareopt(shareopts, aoe_get_shareopts_cb, *opts);
+	if (rc != SA_OK) {
+		free(*opts);
+		*opts = NULL;
+	}
+
+	return (rc);
+}
+
+/*
  * Checks whether the specified AoE share options are syntactically correct.
  */
 static int
 aoe_validate_shareopts(const char *shareopts)
 {
-	/* TODO: Accept 'name' and sec/acl (?) */
-	if ((strcmp(shareopts, "off") == 0) || (strcmp(shareopts, "on") == 0))
-		return (SA_OK);
+	aoe_shareopts_t *opts;
+	int rc = SA_OK;
 
-	return (SA_SYNTAX_ERR);
+	rc = aoe_get_shareopts(NULL, shareopts, &opts);
+
+	free(opts);
+	return (rc);
 }
 
 /*

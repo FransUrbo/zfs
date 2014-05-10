@@ -28,15 +28,15 @@
 #define AOE_DEFAULT_SLOT	0
 #define AOE_DEFAULT_IFACE	"eth0"
 
-typedef struct aoe_share_s {
+typedef struct aoe_shareopts_s {
 	int shelf;		/* shelf (major AoE) address */
 	int slot;		/* slot  (minor AoE) address */
 	char netif[10];		/* name of the ethernet network interface */
 	char path[PATH_MAX];	/* Device Path */
 
-	struct aoe_share_s *next;
-} aoe_share_t;
+	struct aoe_shareopts_s *next;
+} aoe_shareopts_t;
 
-aoe_share_t *aoe_shares;
+aoe_shareopts_t *aoe_shares;
 
 void libshare_aoe_init(void);
