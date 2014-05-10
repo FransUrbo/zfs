@@ -218,7 +218,8 @@ aoe_retrieve_shares(void)
 				buffer = NULL;
 
 				/* Put the linked list together */
-				entry = (aoe_shareopts_t *) malloc(sizeof (aoe_shareopts_t));
+				entry = (aoe_shareopts_t *)
+					malloc(sizeof (aoe_shareopts_t));
 				if (entry == NULL)
 					goto look_out;
 
@@ -234,7 +235,8 @@ aoe_retrieve_shares(void)
 				entry->slot  = atoi(slot);
 				entry->size  = atoi(ssize);
 
-				list_insert_tail(&all_aoe_shares_list, entry);
+				list_insert_tail(&all_aoe_shares_list,
+						 entry);
 			}
 		}
 

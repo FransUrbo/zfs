@@ -23,7 +23,7 @@
  * Copyright (c) 2014 Turbo Fredriksson <turbo@bayour.com>.
  */
 
-#define	VBLADE_CMD_PATH		"/usr/bin/vblade"
+#define	VBLADE_CMD_PATH		"/usr/bin/vbladed"
 #define AOE_DEFAULT_SHELF	9
 #define AOE_DEFAULT_SLOT	0
 #define AOE_DEFAULT_IFACE	"eth0"
