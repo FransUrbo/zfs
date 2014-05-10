@@ -33,23 +33,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
+#include <dirent.h>
 #include <sys/stat.h>
+#include <sys/list.h>
 
 #include <libzfs.h>
 #include <libshare.h>
 #include "libshare_impl.h"
 #include "aoe.h"
 
+#if !defined(offsetof)
+#define offsetof(s, m)  ((size_t)(&(((s *)0)->m)))
+#endif
+
 static boolean_t aoe_available(void);
 static boolean_t aoe_is_share_active(sa_share_impl_t);
 static int aoe_get_shareopts(sa_share_impl_t, const char *, aoe_shareopts_t **);
 
 static sa_fstype_t *aoe_fstype;
+static list_t all_aoe_shares_list;
+
+typedef struct aoe_shares_list_s {
+	char name[10];
+	list_node_t next;
+} aoe_shares_list_t;
 
 /*
  * Simplified version of 'aoe-stat':
 
-  for dir in /sys/block//*e[0-9]*\.[0-9]*; do
+  for dir in /sys/block/*e[0-9]*\.[0-9]*; do
     test -r "$d/payload" && payload=yes	# ??
     dev="${dir/*\!/}";
     nif=`cat "$dir/netif"`;
@@ -120,12 +132,113 @@ aoe_read_sysfs_value(char *path, char **value)
 }
 
 /*
+ * Retrieve the list of AoE shares.
+ * Do this only if we haven't already.
+ * TODO: That doesn't work exactly as intended. Threading?
+ */
+static int
+aoe_retrieve_shares(void)
+{
+	int ret;
+	char *shelf = NULL, *slot = NULL, *netif = NULL, *status = NULL,
+		*ssize = NULL, *buffer = NULL, tmp_path[255];
+	DIR *dir;
+	struct dirent *directory;
+	struct stat eStat;
+	aoe_shareopts_t *entry;
+
+	/* Create the global share list  */
+	list_create(&all_aoe_shares_list, sizeof (aoe_shareopts_t),
+		    offsetof(aoe_shareopts_t, next));
+
+	/* First retrieve a list of all shares, without info.
+	 * DIR: /sys/block/*e[0-9]*\.[0-9]* 
+	 * This is a link to /sys/devices/virtual/block/..., so
+	 * start there.
+	 */
+	if ((dir = opendir("/sys/devices/virtual/block"))) {
+		while ((directory = readdir(dir))) {
+			if (directory->d_name[0] == '.' &&
+			    !S_ISDIR(eStat.st_mode))
+				continue;
+
+			if (strcmp(directory->d_name, "etherd!") == 0) {
+#ifdef DEBUG
+				fprintf(stderr, "  aoe_retrieve_shares: %s\n",
+					directory->d_name);
+#endif
+				/* TODO: From the path, retrieve shelf and slot */
+				shelf = "9";
+				slot  = "0";
+
+				/* Get ethernet interface - netif */
+				ret = snprintf(tmp_path, sizeof (tmp_path),
+					       "%s/netif", directory->d_name);
+				if (ret < 0 || ret >= sizeof (tmp_path))
+					goto look_out;
+				if (aoe_read_sysfs_value(tmp_path, &buffer)
+				    != SA_OK)
+					goto look_out;
+				netif = buffer;
+				buffer = NULL;
+
+				/* Get state - status */
+				ret = snprintf(tmp_path, sizeof (tmp_path),
+					       "%s/state", directory->d_name);
+				if (ret < 0 || ret >= sizeof (tmp_path))
+					goto look_out;
+				if (aoe_read_sysfs_value(tmp_path, &buffer)
+				    != SA_OK)
+					goto look_out;
+				status = buffer;
+				buffer = NULL;
+
+				/* Get sector size - sector_size */
+				ret = snprintf(tmp_path, sizeof (tmp_path),
+					       "%s/size", directory->d_name);
+				if (ret < 0 || ret >= sizeof (tmp_path))
+					goto look_out;
+				if (aoe_read_sysfs_value(tmp_path, &buffer)
+				    != SA_OK)
+					goto look_out;
+				ssize = buffer;
+				buffer = NULL;
+
+				/* Put the linked list together */
+				entry = (aoe_shareopts_t *) malloc(sizeof (aoe_shareopts_t));
+				if (entry == NULL)
+					goto look_out;
+
+				/* TODO: How to get the physical ZVOL device? */
+				strncpy(entry->path, NULL,
+					sizeof (entry->path));
+
+				strncpy(entry->netif, netif,
+					sizeof (entry->netif));
+				strncpy(entry->status, status,
+					sizeof (entry->status));
+				entry->shelf = atoi(shelf);
+				entry->slot  = atoi(slot);
+				entry->size  = atoi(ssize);
+
+				list_insert_tail(&all_aoe_shares_list, entry);
+			}
+		}
+
+look_out:
+		closedir(dir);
+	}
+
+	return (SA_OK);
+}
+
+/*
  * Used internally by aoe_enable_share to enable sharing for a single host.
  */
 static int
 aoe_enable_share_one(sa_share_impl_t impl_share, const char *sharepath)
 {
-	char *argv[5], *shareopts, params_shelf[10], params_slot[10];
+	char *argv[6], *shareopts, params_shelf[10], params_slot[10];
 	aoe_shareopts_t *opts;
 	int rc, ret;
 
@@ -210,8 +323,12 @@ aoe_enable_share(sa_share_impl_t impl_share)
  * Used internally by aoe_disable_share to disable sharing for a single host.
  */
 static int
-aoe_disable_share_one(const char *sharename)
+aoe_disable_share_one(int shelf, int slot, const char *netif)
 {
+	/* TODO: How to disable a share
+	   debian:~# ps | grep vblade
+	   11982 ?        S      0:00 vblade 9 0 eth0 /dev/zvol/rpool/test
+	*/
 }
 
 /*
@@ -220,6 +337,43 @@ aoe_disable_share_one(const char *sharename)
 static int
 aoe_disable_share(sa_share_impl_t impl_share)
 {
+	int ret;
+	aoe_shareopts_t *share;
+
+	if (!aoe_available()) {
+		/*
+		 * The share can't possibly be active, so nothing
+		 * needs to be done to disable it.
+		 */
+		return (SA_OK);
+	}
+
+	/* Retrieve the list of (possible) active shares */
+	aoe_retrieve_shares();
+	for (share = list_head(&all_aoe_shares_list);
+	     share != NULL;
+	     share = list_next(&all_aoe_shares_list, share))
+	{
+#ifdef DEBUG
+		fprintf(stderr, "aoe_disable_share: %s ?? %s (%d.%d/%s)\n",
+			impl_share->sharepath, share->path, share->shelf,
+			share->slot, share->netif);
+#endif
+		if (strcmp(impl_share->sharepath, share->path) == 0) {
+#ifdef DEBUG
+			fprintf(stderr, "=> disable %d.%d/%s (%s)\n",
+				share->shelf, share->slot, share->netif,
+				share->path);
+#endif
+			if((ret = aoe_disable_share_one(share->shelf,
+				share->slot, share->netif))
+			   == SA_OK)
+				list_remove(&all_aoe_shares_list, share);
+			return (ret);
+		}
+	}
+
+	return (SA_OK);
 }
 
 /*

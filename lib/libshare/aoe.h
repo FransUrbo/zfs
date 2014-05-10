@@ -29,9 +29,11 @@
 #define AOE_DEFAULT_IFACE	"eth0"
 
 typedef struct aoe_shareopts_s {
-	int shelf;		/* shelf (major AoE) address */
-	int slot;		/* slot  (minor AoE) address */
+	int  shelf;		/* shelf (major AoE) address */
+	int  slot;		/* slot  (minor AoE) address */
 	char netif[10];		/* name of the ethernet network interface */
+	char status[10];	/* status of share - 'up' and ... ? */
+	int  size;		/* Size of device in sectors */
 	char path[PATH_MAX];	/* Device Path */
 
 	struct aoe_shareopts_s *next;
