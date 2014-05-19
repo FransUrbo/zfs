@@ -139,9 +139,9 @@ aoe_read_sysfs_value(char *path, char **value)
 static int
 aoe_retrieve_shares(void)
 {
-	int ret, i, j;
+	int ret;
 	char *shelf = NULL, *slot = NULL, *netif = NULL, *status = NULL,
-		*ssize = NULL, *buffer = NULL, tmp_path[255], *d;
+		*ssize = NULL, *buffer = NULL, tmp_path[255], *d, *pos;
 	DIR *dir;
 	struct dirent *directory;
 	struct stat eStat;
@@ -170,19 +170,22 @@ aoe_retrieve_shares(void)
 				/* From the path, retrieve shelf and slot */
 				/* dir=/sys/block/etherd!e9.0 => Get 9 and 0 */
 				d = strchr(directory->d_name, '!') + 2;
-				for (i=0, j=0; i <= strlen(d)-1; i++, j++) {
-					if (d[i] == '.') {
-						for (i+=1, j=0;
-						     i <= strlen(d)-1;
-						     i++, j++)
-							slot[j] = d[i];
-						slot[j] = '\0';
-						break;
-					}
-
-					shelf[j] = d[i];
+				if (!(shelf = strdup(d))
+				    || !(slot = strdup(d)))
+				{
+					if (shelf)
+						free(shelf);
+					return;
 				}
-				shelf[j] = '\0';
+    
+				if ((pos = strchr(shelf, '!'))
+				    && (pos = strchr(pos, '.')))
+					*pos = 0;
+    
+				printf("shelf=%s, slot=%s\n", shelf, slot);
+				free(shelf);
+				free(slot);
+
 
 				/* Get ethernet interface - netif */
 				ret = snprintf(tmp_path, sizeof (tmp_path),
