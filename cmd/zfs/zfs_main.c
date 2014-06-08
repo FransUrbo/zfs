@@ -243,8 +243,8 @@ get_usage(zfs_help_t idx)
 	case HELP_PROMOTE:
 		return (gettext("\tpromote <clone-filesystem>\n"));
 	case HELP_RECEIVE:
-		return (gettext("\treceive [-vnFu] [-d | -e] [-o <property>] "
-		    "... [-x <property>] ... [-l <filesystem|volume>] ... "
+		return (gettext("\treceive [-vnFu] [-d | -e] [-o property=value] "
+		    "... [-x property] ... [-l <filesystem|volume>] ... "
 		    " <filesystem|volume|snapshot>\n"));
 	case HELP_RENAME:
 		return (gettext("\trename [-f] <filesystem|volume|snapshot> "

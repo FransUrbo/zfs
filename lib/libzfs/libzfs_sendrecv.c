@@ -2967,13 +2967,6 @@ zfs_receive_one(libzfs_handle_t *hdl, int infd, const char *tosnap,
 			}
 		}
 
-		if (!flags->dryrun && zhp->zfs_type == ZFS_TYPE_VOLUME &&
-		    zvol_remove_link(hdl, zhp->zfs_name) != 0) {
-			zfs_close(zhp);
-			zcmd_free_nvlists(&zc);
-			return (-1);
-		}
-
 		/* convert override properties e.g. strings to native */
 		if (has_exprops && props_override(dsname, props, exprops,
 		    &nprops, flags, hdl, zhp->zfs_type,

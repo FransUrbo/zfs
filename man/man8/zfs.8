@@ -169,12 +169,12 @@ zfs \- configures ZFS file systems
 
 .LP
 .nf
-\fBzfs\fR \fBreceive | recv\fR [\fB-vnFu\fR] \fIfilesystem\fR|\fIvolume\fR|\fIsnapshot\fR
+\fBzfs\fR \fBreceive | recv\fR [\fB-vnFu\fR] [\fB-x\fR \fIproperty\fR] [\fB-o\fR \fIproperty=value\fR] [\fB-l\fR \fI<filesystem|volume>\fR] \fIfilesystem\fR|\fIvolume\fR|\fIsnapshot\fR
 .fi
 
 .LP
 .nf
-\fBzfs\fR \fBreceive | recv\fR [\fB-vnFu\fR] [\fB-d\fR|\fB-e\fR] \fIfilesystem\fR
+\fBzfs\fR \fBreceive | recv\fR [\fB-vnFu\fR] [\fB-d\fR|\fB-e\fR] [\fB-x\fR \fIproperty\fR] [\fB-o\fR [\fIproperty=value\fR] [\fB-l\fR \fI<filesystem|volume>\fR] \fIfilesystem\fR
 .fi
 
 .LP
@@ -2630,11 +2630,11 @@ The format of the stream is committed. You will be able to receive your streams 
 .ne 2
 .mk
 .na
-\fB\fBzfs receive\fR [\fB-vnFu\fR] \fIfilesystem\fR|\fIvolume\fR|\fIsnapshot\fR\fR
+\fB\fBzfs receive\fR [\fB-vnFu\fR] [\fB-x\fR \fIproperty\fR] [\fB-o\fR \fIproperty=value\fR] [\fB-l\fR \fI<filesystem|volume>\fR] \fIfilesystem\fR|\fIvolume\fR|\fIsnapshot\fR\fR
 .ad
 .br
 .na
-\fB\fBzfs receive\fR [\fB-vnFu\fR] [\fB-d\fR|\fB-e\fR] \fIfilesystem\fR\fR
+\fB\fBzfs receive\fR [\fB-vnFu\fR] [\fB-d\fR|\fB-e\fR] [\fB-x\fR \fIproperty\fR] [\fB-o\fR \fIproperty=value\fR] [\fB-l\fR \fI<filesystem|volume>\fR] \fIfilesystem\fR\fR
 .ad
 .sp .6
 .RS 4n
@@ -2689,6 +2689,40 @@ File system that is associated with the received stream is not mounted.
 .sp .6
 .RS 4n
 Print verbose information about the stream and the time required to perform the receive operation.
+.RE
+
+.sp
+.ne 2
+.na
+\fB[\fB-x\fR]\fR property
+.ad
+.sp .6
+.RS 4n
+Exclude property from the replication stream (when including the dataset's properties in the stream).
+.sp
+Ensures that the effective value of the specified property after the receive is unaffected by the value of that property in the send stream (if any), as if the property had been excluded from the send stream. If the specified property is not present in the send stream, this option does nothing. If a received property needs to be overridden, the effective value can be set or inherited, depending on the property. In the case of an incremental update, \fB-x\fR leaves any existing local setting or explicit inheritance unchanged (since the received property is already overridden). All \fB-o\fR restrictions apply equally to \fB-x\fR.
+.RE
+
+.sp
+.ne 2
+.na
+\fB[\fB-o\fR]\fR \fIproperty=value\fR
+.ad
+.sp .6
+.RS 4n
+Override property on the send stream.
+.sp
+Set-once properties bound to the received data, such as normalization and casesensitivity, cannot be set at receive time even when the datasets are newly created by zfs receive. Multiple \fB-o\fR options can be specified. An error results if the same property is specified in multiple \fB-o\fR or \fB-x\fR options.
+.RE
+
+.sp
+.ne 2
+.na
+\fB[\fB-l\fR]\fR \fI<filesystem|volume>\fR
+.ad
+.sp .6
+.RS 4n
+Limit receiving to specified filesystem or volume.
 .RE
 
 .sp
