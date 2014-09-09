@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Replace a device with a hot spare in response to IO or CHECKSUM errors.
 # The following actions will be performed automatically when the number
@@ -110,6 +110,17 @@ notify()
     return "${rv}"
 }
 
+# Given a <device>, return the size
+vdev_size() {
+	local VDEV=`basename $1`
+
+	for dir in /dev /dev/disk/by-*; do
+		if [[ -L $dir/$VDEV ]]; then
+			blockdev --getsize64  $dir/$VDEV
+		fi
+	done
+}
+
 
 # main
 #
@@ -210,6 +221,8 @@ main()
         # Round-robin through the spares trying those that are available.
         #
         for spare in ${ZEVENT_VDEV_SPARE_PATHS}; do
+            orig_size=${ZEVENT_VDEV_SIZE}
+            spare_size=$(vdev_size ${SPARE})
 
             # shellcheck disable=SC2046
             set -- $(query_vdev_status "${ZEVENT_POOL}" "${spare}")
