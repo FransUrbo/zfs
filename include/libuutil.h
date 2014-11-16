@@ -25,7 +25,7 @@
 #ifndef	_LIBUUTIL_H
 #define	_LIBUUTIL_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <stdarg.h>
 #include <stdio.h>
 

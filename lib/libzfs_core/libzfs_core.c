@@ -74,13 +74,13 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <sys/nvpair.h>
-#include <sys/param.h>
-#include <sys/types.h>
+#include <sys/param_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/stat.h>
 #include <sys/zfs_ioctl.h>
 

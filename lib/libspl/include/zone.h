@@ -28,7 +28,7 @@
 
 
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/zone.h>
 #include <sys/priv.h>
 

@@ -26,7 +26,7 @@
 
 #include <libintl.h>
 #include <unistd.h>
-#include <sys/file.h>
+#include <sys/file_zfs.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <libzfs.h>

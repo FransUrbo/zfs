@@ -133,14 +133,14 @@
  *         deserialization failing.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
 #include <sys/errno.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 #include <sys/buf.h>
 #include <sys/modctl.h>
 #include <sys/open.h>
-#include <sys/file.h>
+#include <sys/file_zfs.h>
 #include <sys/kmem.h>
 #include <sys/conf.h>
 #include <sys/cmn_err.h>

@@ -28,7 +28,7 @@
 #include <sys/spa.h>
 #include <sys/spa_impl.h>
 #include <sys/nvpair.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 #include <sys/fs/zfs.h>
 #include <sys/vdev_impl.h>
 #include <sys/zfs_ioctl.h>

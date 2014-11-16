@@ -31,7 +31,7 @@
 #ifndef	_SYS_FS_ZFS_H
 #define	_SYS_FS_ZFS_H
 
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

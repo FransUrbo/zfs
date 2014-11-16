@@ -14,7 +14,7 @@ libspl_HEADERS = \
 	$(top_srcdir)/lib/libspl/include/sys/dkio.h \
 	$(top_srcdir)/lib/libspl/include/sys/dklabel.h \
 	$(top_srcdir)/lib/libspl/include/sys/feature_tests.h \
-	$(top_srcdir)/lib/libspl/include/sys/file.h \
+	$(top_srcdir)/lib/libspl/include/sys/file_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/frame.h \
 	$(top_srcdir)/lib/libspl/include/sys/int_limits.h \
 	$(top_srcdir)/lib/libspl/include/sys/int_types.h \
@@ -30,7 +30,7 @@ libspl_HEADERS = \
 	$(top_srcdir)/lib/libspl/include/sys/mnttab.h \
 	$(top_srcdir)/lib/libspl/include/sys/mount.h \
 	$(top_srcdir)/lib/libspl/include/sys/note.h \
-	$(top_srcdir)/lib/libspl/include/sys/param.h \
+	$(top_srcdir)/lib/libspl/include/sys/param_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/priv.h \
 	$(top_srcdir)/lib/libspl/include/sys/processor.h \
 	$(top_srcdir)/lib/libspl/include/sys/sdt.h \
@@ -39,14 +39,14 @@ libspl_HEADERS = \
 	$(top_srcdir)/lib/libspl/include/sys/stropts.h \
 	$(top_srcdir)/lib/libspl/include/sys/sunddi.h \
 	$(top_srcdir)/lib/libspl/include/sys/sysevent.h \
-	$(top_srcdir)/lib/libspl/include/sys/sysmacros.h \
+	$(top_srcdir)/lib/libspl/include/sys/sysmacros_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/systeminfo.h \
 	$(top_srcdir)/lib/libspl/include/sys/systm.h \
-	$(top_srcdir)/lib/libspl/include/sys/time.h \
+	$(top_srcdir)/lib/libspl/include/sys/time_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/types32.h \
-	$(top_srcdir)/lib/libspl/include/sys/types.h \
+	$(top_srcdir)/lib/libspl/include/sys/types_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/tzfile.h \
-	$(top_srcdir)/lib/libspl/include/sys/uio.h \
+	$(top_srcdir)/lib/libspl/include/sys/uio_zfs.h \
 	$(top_srcdir)/lib/libspl/include/sys/va_list.h \
 	$(top_srcdir)/lib/libspl/include/sys/varargs.h \
 	$(top_srcdir)/lib/libspl/include/sys/vnode.h \

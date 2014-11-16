@@ -34,16 +34,16 @@
 #ifdef __KERNEL__
 
 #include <sys/note.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/t_lock.h>
 #include <sys/atomic.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/bitmap.h>
 #include <sys/cmn_err.h>
 #include <sys/kmem.h>
 #include <sys/taskq.h>
 #include <sys/buf.h>
-#include <sys/param.h>
+#include <sys/param_zfs.h>
 #include <sys/systm.h>
 #include <sys/cpuvar.h>
 #include <sys/kobj.h>
@@ -56,7 +56,7 @@
 #include <sys/list.h>
 #include <sys/uio_impl.h>
 #include <sys/dirent.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 #include <vm/seg_kmem.h>
 #include <sys/zone.h>
 #include <sys/sdt.h>
@@ -88,11 +88,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <strings.h>
+#include <string_zfs.h>
+#include <strings_zfs.h>
 #include <pthread.h>
 #include <synch.h>
-#include <assert.h>
+#include <assert_zfs.h>
 #include <alloca.h>
 #include <umem.h>
 #include <limits.h>
@@ -103,14 +103,14 @@
 #include <signal.h>
 #include <sys/mman.h>
 #include <sys/note.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/cred.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/bitmap.h>
 #include <sys/resource.h>
 #include <sys/byteorder.h>
 #include <sys/list.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 #include <sys/zfs_debug.h>
 #include <sys/sdt.h>
 #include <sys/kstat.h>
@@ -579,7 +579,7 @@ extern void vn_close(vnode_t *vp);
 
 extern vnode_t *rootdir;
 
-#include <sys/file.h>		/* for FREAD, FWRITE, etc */
+#include <sys/file_zfs.h>		/* for FREAD, FWRITE, etc */
 
 /*
  * Random stuff

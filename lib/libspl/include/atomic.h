@@ -27,7 +27,7 @@
 #ifndef	_SYS_ATOMIC_H
 #define	_SYS_ATOMIC_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/inttypes.h>
 
 #ifdef	__cplusplus

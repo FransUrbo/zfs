@@ -25,7 +25,7 @@
  */
 
 #include <time.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 
 void
 gethrestime(timestruc_t *ts)

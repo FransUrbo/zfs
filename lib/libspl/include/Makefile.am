@@ -2,7 +2,7 @@ SUBDIRS = ia32 rpc sys util
 
 libspldir = $(includedir)/libspl
 libspl_HEADERS = \
-	$(top_srcdir)/lib/libspl/include/assert.h \
+	$(top_srcdir)/lib/libspl/include/assert_zfs.h \
 	$(top_srcdir)/lib/libspl/include/atomic.h \
 	$(top_srcdir)/lib/libspl/include/attr.h \
 	$(top_srcdir)/lib/libspl/include/devid.h \
@@ -16,8 +16,8 @@ libspl_HEADERS = \
 	$(top_srcdir)/lib/libspl/include/statcommon.h \
 	$(top_srcdir)/lib/libspl/include/stdio.h \
 	$(top_srcdir)/lib/libspl/include/stdlib.h \
-	$(top_srcdir)/lib/libspl/include/string.h \
-	$(top_srcdir)/lib/libspl/include/strings.h \
+	$(top_srcdir)/lib/libspl/include/string_zfs.h \
+	$(top_srcdir)/lib/libspl/include/strings_zfs.h \
 	$(top_srcdir)/lib/libspl/include/stropts.h \
 	$(top_srcdir)/lib/libspl/include/synch.h \
 	$(top_srcdir)/lib/libspl/include/thread.h \

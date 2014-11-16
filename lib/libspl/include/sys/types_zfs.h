@@ -29,8 +29,8 @@
 
 #include <sys/isa_defs.h>
 #include <sys/feature_tests.h>
-#include_next <sys/types.h>
-#include <sys/param.h> /* for NBBY */
+#include <sys/types.h>
+#include <sys/param_zfs.h> /* for NBBY */
 #include <sys/types32.h>
 #include <sys/va_list.h>
 

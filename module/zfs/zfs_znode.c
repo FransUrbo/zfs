@@ -26,11 +26,11 @@
 /* Portions Copyright 2007 Jeremy Teo */
 
 #ifdef _KERNEL
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/time.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
+#include <sys/time_zfs.h>
 #include <sys/systm.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/resource.h>
 #include <sys/mntent.h>
 #include <sys/mkdev.h>
@@ -39,7 +39,7 @@
 #include <sys/vfs.h>
 #include <sys/vfs_opreg.h>
 #include <sys/vnode.h>
-#include <sys/file.h>
+#include <sys/file_zfs.h>
 #include <sys/kmem.h>
 #include <sys/errno.h>
 #include <sys/unistd.h>

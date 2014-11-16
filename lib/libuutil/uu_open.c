@@ -28,7 +28,7 @@
 
 #include "libuutil_common.h"
 
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 
 #include <errno.h>
 #include <fcntl.h>

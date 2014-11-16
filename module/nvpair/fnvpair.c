@@ -26,7 +26,7 @@
 #include <sys/nvpair.h>
 #include <sys/kmem.h>
 #include <sys/debug.h>
-#include <sys/param.h>
+#include <sys/param_zfs.h>
 #ifndef _KERNEL
 #include <stdlib.h>
 #endif

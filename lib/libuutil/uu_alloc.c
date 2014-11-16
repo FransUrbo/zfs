@@ -27,7 +27,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 
 void *
 uu_zalloc(size_t n)

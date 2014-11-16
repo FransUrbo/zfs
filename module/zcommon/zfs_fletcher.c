@@ -125,8 +125,8 @@
  * than sha-256, and slower than 'off', which doesn't touch the data at all.
  */
 
-#include <sys/types.h>
-#include <sys/sysmacros.h>
+#include <sys/types_zfs.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/byteorder.h>
 #include <sys/zio.h>
 #include <sys/spa.h>

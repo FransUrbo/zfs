@@ -27,8 +27,8 @@
  * String helper functions
  */
 
-#include <string.h>
-#include <sys/types.h>
+#include <string_zfs.h>
+#include <sys/types_zfs.h>
 #include <stdio.h>
 #include <malloc.h>
 #include <ctype.h>

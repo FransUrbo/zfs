@@ -27,7 +27,7 @@
 #define	_ZFS_PROP_H
 
 #include <sys/fs/zfs.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

@@ -51,12 +51,12 @@
  * fm_ena_format_get() and fm_ena_gen_get().
  */
 
-#include <sys/types.h>
-#include <sys/time.h>
+#include <sys/types_zfs.h>
+#include <sys/time_zfs.h>
 #include <sys/list.h>
 #include <sys/nvpair.h>
 #include <sys/cmn_err.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/compress.h>
 #include <sys/sunddi.h>
 #include <sys/systeminfo.h>
@@ -73,7 +73,7 @@
 #include <sys/cpuvar.h>
 #include <sys/console.h>
 #include <sys/kobj.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 #include <sys/zfs_ioctl.h>
 
 int zfs_zevent_len_max = 0;

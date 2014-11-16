@@ -29,12 +29,12 @@
 #include <sys/stropts.h>
 #include <sys/isa_defs.h>
 #include <sys/nvpair.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #if defined(_KERNEL) && !defined(_BOOT)
 #include <sys/varargs.h>
 #else
 #include <stdarg.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #endif
 
 /*

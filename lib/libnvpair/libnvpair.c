@@ -24,9 +24,9 @@
  */
 
 #include <unistd.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <libintl.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/inttypes.h>
 #include <stdarg.h>
 #include <note.h>

@@ -25,7 +25,7 @@
  */
 
 
-#include <string.h>
+#include <string_zfs.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <limits.h>

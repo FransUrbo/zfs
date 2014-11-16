@@ -25,7 +25,7 @@
  */
 
 #include <atomic.h>
-#include <assert.h>
+#include <assert_zfs.h>
 #include <pthread.h>
 
 /*

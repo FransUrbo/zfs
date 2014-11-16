@@ -40,7 +40,7 @@
 #include <sys/systm.h>
 #else
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <ctype.h>
 #endif
 

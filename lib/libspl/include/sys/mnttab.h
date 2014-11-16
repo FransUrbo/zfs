@@ -32,7 +32,7 @@
 
 #include <stdio.h>
 #include <mntent.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifdef MNTTAB
 #undef MNTTAB

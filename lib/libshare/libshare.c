@@ -27,9 +27,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <libintl.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <libzfs.h>

@@ -27,7 +27,7 @@
 #ifndef _LIBSPL_LIBGEN_H
 #define	_LIBSPL_LIBGEN_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 extern int mkdirp(const char *, mode_t);
 

@@ -87,8 +87,8 @@
  *	  than the value of the indicated "avl_node_t *".
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
 #include <sys/debug.h>
 #include <sys/avl.h>
 #include <sys/cmn_err.h>

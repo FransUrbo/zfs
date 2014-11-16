@@ -29,11 +29,11 @@
 /*	  All Rights Reserved	*/
 
 #include <stdio.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <mntent.h>
 #include <sys/mnttab.h>
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/stat.h>
 #include <unistd.h>
 

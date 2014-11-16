@@ -10,6 +10,7 @@ INSTALL_MOD_DIR ?= extra
 ZFS_MODULE_CFLAGS += -include @SPL_OBJ@/spl_config.h
 ZFS_MODULE_CFLAGS += -include @abs_top_builddir@/zfs_config.h
 ZFS_MODULE_CFLAGS += -I@abs_top_srcdir@/include -I@SPL@/include -I@SPL@
+ZFS_MODULE_CFLAGS += -I@abs_top_srcdir@/lib/libspl/include
 export ZFS_MODULE_CFLAGS
 
 modules:
@@ -28,7 +29,7 @@ modules:
 		"*** - @SPL_OBJ@/module/@SPL_SYMBOLS@\n"; \
 		exit 1; \
 	fi
-	$(MAKE) -C @LINUX_OBJ@ SUBDIRS=`pwd` @KERNELMAKE_PARAMS@ CONFIG_ZFS=m $@
+	$(MAKE) -C @LINUX_OBJ@ SUBDIRS=`pwd` @KERNELMAKE_PARAMS@ KCPPFLAGS="$(ZFS_MODULE_CFLAGS)" KCFLAGS="$(ZFS_MODULE_CFLAGS)" CONFIG_ZFS=m $@
 
 clean:
 	@# Only cleanup the kernel build directories when CONFIG_KERNEL

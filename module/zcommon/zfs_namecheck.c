@@ -41,10 +41,10 @@
 #if defined(_KERNEL)
 #include <sys/systm.h>
 #else
-#include <string.h>
+#include <string_zfs.h>
 #endif
 
-#include <sys/param.h>
+#include <sys/param_zfs.h>
 #include <sys/nvpair.h>
 #include "zfs_namecheck.h"
 #include "zfs_deleg.h"

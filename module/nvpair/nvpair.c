@@ -39,8 +39,8 @@
 #else
 #include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
-#include <strings.h>
+#include <string_zfs.h>
+#include <strings_zfs.h>
 #endif
 
 #ifndef	offsetof

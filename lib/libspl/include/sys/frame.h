@@ -27,7 +27,7 @@
 #ifndef _SYS_FRAME_H
 #define	_SYS_FRAME_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #if defined(_LP64) || defined(_I32LPx)
 typedef long	greg_t;

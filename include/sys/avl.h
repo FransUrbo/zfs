@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/avl_impl.h>
 
 /*

@@ -29,12 +29,12 @@
 #include <sys/systm.h>
 #else
 #include <errno.h>
-#include <string.h>
+#include <string_zfs.h>
 #endif
 #include <sys/debug.h>
 #include <sys/fs/zfs.h>
 #include <sys/inttypes.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include "zfeature_common.h"
 
 /*

@@ -29,7 +29,7 @@
 #include <libintl.h>
 #include <link.h>
 #include <pthread.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 
 #include <libzfs.h>

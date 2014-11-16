@@ -25,8 +25,8 @@
 #ifndef _SYS_DDT_H
 #define	_SYS_DDT_H
 
-#include <sys/sysmacros.h>
-#include <sys/types.h>
+#include <sys/sysmacros_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/fs/zfs.h>
 #include <sys/zio.h>
 #include <sys/dmu.h>

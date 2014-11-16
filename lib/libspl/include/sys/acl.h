@@ -26,7 +26,7 @@
 #ifndef _SYS_ACL_H
 #define	_SYS_ACL_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/acl_impl.h>
 
 #ifdef	__cplusplus

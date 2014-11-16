@@ -28,7 +28,7 @@
 #define	_LIBSPL_SYS_TIME_H
 
 #include_next <sys/time.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifndef SEC
 #define	SEC		1

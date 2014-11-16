@@ -27,7 +27,7 @@
 #ifndef	ZED_FILE_H
 #define	ZED_FILE_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <unistd.h>
 
 ssize_t zed_file_read_n(int fd, void *buf, size_t n);

@@ -34,14 +34,14 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <math.h>
 #include <sys/stat.h>
 #include <sys/mnttab.h>
 #include <sys/mntent.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <wait.h>
 
 #include <libzfs.h>

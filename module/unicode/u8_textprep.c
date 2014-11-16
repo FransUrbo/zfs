@@ -35,10 +35,10 @@
  * Interface stability: Committed.
  */
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #ifdef	_KERNEL
-#include <sys/param.h>
-#include <sys/sysmacros.h>
+#include <sys/param_zfs.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/systm.h>
 #include <sys/debug.h>
 #include <sys/kmem.h>
@@ -46,7 +46,7 @@
 #include <sys/sunddi.h>
 #else
 #include <sys/u8_textprep.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #endif	/* _KERNEL */
 #include <sys/byteorder.h>
 #include <sys/errno.h>

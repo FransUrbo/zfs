@@ -28,7 +28,7 @@
 #ifndef	_SYS_ZIL_H
 #define	_SYS_ZIL_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/spa.h>
 #include <sys/zio.h>
 #include <sys/dmu.h>

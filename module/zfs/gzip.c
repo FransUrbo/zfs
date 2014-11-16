@@ -27,7 +27,7 @@
 
 
 #include <sys/debug.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifdef _KERNEL
 
@@ -40,7 +40,7 @@ typedef size_t zlen_t;
 
 #else /* _KERNEL */
 
-#include <strings.h>
+#include <strings_zfs.h>
 #include <zlib.h>
 
 typedef uLongf zlen_t;

@@ -30,7 +30,7 @@
 
 #include <libintl.h>
 #include <limits.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>

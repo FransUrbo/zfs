@@ -30,8 +30,8 @@
 #include <sys/avl.h>
 #include <sys/zfs_context.h>
 #include <sys/nvpair.h>
-#include <sys/sysmacros.h>
-#include <sys/types.h>
+#include <sys/sysmacros_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/fs/zfs.h>
 
 #ifdef	__cplusplus

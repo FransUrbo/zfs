@@ -55,7 +55,7 @@ extern "C" {
  * suitability of this software for any purpose.
  */
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/byteorder.h>
 
 typedef struct {

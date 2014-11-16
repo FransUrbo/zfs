@@ -33,11 +33,11 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
-#include <sys/file.h>
+#include <strings_zfs.h>
+#include <sys/file_zfs.h>
 #include <sys/mntent.h>
 #include <sys/mnttab.h>
-#include <sys/param.h>
+#include <sys/param_zfs.h>
 #include <sys/stat.h>
 
 #include <sys/dmu.h>

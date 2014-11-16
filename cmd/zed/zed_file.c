@@ -27,10 +27,10 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <unistd.h>
 #include "zed_log.h"
 

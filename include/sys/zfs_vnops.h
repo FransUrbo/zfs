@@ -27,7 +27,7 @@
 
 #include <sys/vnode.h>
 #include <sys/xvattr.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 #include <sys/cred.h>
 #include <sys/fcntl.h>
 #include <sys/pathname.h>

@@ -24,7 +24,7 @@
  * Copyright (C) 2013-2014 Lawrence Livermore National Security, LLC.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -33,9 +33,9 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <sys/stat.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 #include <unistd.h>
 #include "zed.h"
 #include "zed_conf.h"

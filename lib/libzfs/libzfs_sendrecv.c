@@ -28,13 +28,13 @@
  * Copyright (c) 2013 Steven Hartland. All rights reserved.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <ctype.h>
 #include <errno.h>
 #include <libintl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 #include <stddef.h>
 #include <fcntl.h>

@@ -41,7 +41,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stddef.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <unistd.h>
 #include <libintl.h>
 #include <libuutil.h>

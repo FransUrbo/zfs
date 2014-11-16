@@ -27,7 +27,7 @@
  * Copyright 2013 Nexenta Systems, Inc. All rights reserved.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <ctype.h>
 #include <errno.h>
 #include <libgen.h>
@@ -38,7 +38,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <zone.h>
@@ -52,7 +52,7 @@
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/fs/zfs.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <time.h>
 
 #include <libzfs.h>

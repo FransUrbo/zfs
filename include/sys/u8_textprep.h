@@ -29,7 +29,7 @@
 
 
 #include <sys/isa_defs.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/errno.h>
 
 #ifdef	__cplusplus

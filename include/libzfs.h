@@ -30,11 +30,11 @@
 #ifndef	_LIBZFS_H
 #define	_LIBZFS_H
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <libnvpair.h>
 #include <sys/mnttab.h>
-#include <sys/param.h>
-#include <sys/types.h>
+#include <sys/param_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/varargs.h>
 #include <sys/fs/zfs.h>
 #include <sys/avl.h>

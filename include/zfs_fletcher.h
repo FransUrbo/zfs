@@ -26,7 +26,7 @@
 #ifndef	_ZFS_FLETCHER_H
 #define	_ZFS_FLETCHER_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/spa.h>
 
 #ifdef	__cplusplus

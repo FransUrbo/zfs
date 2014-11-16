@@ -26,8 +26,8 @@
 #ifndef	_SYS_NVPAIR_H
 #define	_SYS_NVPAIR_H
 
-#include <sys/types.h>
-#include <sys/time.h>
+#include <sys/types_zfs.h>
+#include <sys/time_zfs.h>
 #include <sys/errno.h>
 #include <sys/va_list.h>
 

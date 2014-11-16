@@ -24,7 +24,7 @@
  */
 
 #include <ctype.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>

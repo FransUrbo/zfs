@@ -44,7 +44,7 @@
  */
 #ifdef _KERNEL
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/uio_impl.h>
 
 /*

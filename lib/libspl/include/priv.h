@@ -27,7 +27,7 @@
 #ifndef _LIBSPL_PRIV_H
 #define	_LIBSPL_PRIV_H
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 /* Couldn't find this definition in OpenGrok */
 #define	PRIV_SYS_CONFIG	"sys_config"

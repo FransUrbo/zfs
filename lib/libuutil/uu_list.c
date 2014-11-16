@@ -28,9 +28,9 @@
 #include "libuutil_common.h"
 
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <unistd.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 
 #define	ELEM_TO_NODE(lp, e) \
 	((uu_list_node_impl_t *)((uintptr_t)(e) + (lp)->ul_offset))

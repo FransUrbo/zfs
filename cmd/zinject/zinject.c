@@ -140,7 +140,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 
 #include <sys/fs/zfs.h>

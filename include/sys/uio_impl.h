@@ -39,7 +39,7 @@
 #ifndef _SYS_UIO_IMPL_H
 #define	_SYS_UIO_IMPL_H
 
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 
 extern int uiomove(void *, size_t, enum uio_rw, uio_t *);
 extern void uio_prefaultpages(ssize_t, uio_t *);

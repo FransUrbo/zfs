@@ -24,12 +24,12 @@
  * Copyright (C) 2013-2014 Lawrence Livermore National Security, LLC.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <syslog.h>
 #include "zed_log.h"
 

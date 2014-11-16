@@ -24,14 +24,14 @@
  * Copyright (c) 2013 by Delphix. All rights reserved.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
 #include <sys/systm.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/cmn_err.h>
 #include <sys/kmem.h>
 #include <sys/thread.h>
-#include <sys/file.h>
+#include <sys/file_zfs.h>
 #include <sys/fcntl.h>
 #include <sys/vfs.h>
 #include <sys/fs/zfs.h>

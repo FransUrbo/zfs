@@ -29,7 +29,7 @@
 
 #include <sys/fs/zfs.h>
 #include <sys/inttypes.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

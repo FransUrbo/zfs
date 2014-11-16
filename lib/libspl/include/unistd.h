@@ -32,7 +32,7 @@
 #include <sys/ioctl.h>
 
 #if !defined(HAVE_ISSETUGID)
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #define	issetugid() (geteuid() == 0 || getegid() == 0)
 #endif
 

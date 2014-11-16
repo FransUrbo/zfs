@@ -42,7 +42,7 @@
  */
 
 #include <libzfs.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <unistd.h>
 #include "libzfs_impl.h"
 #include "zfeature_common.h"

@@ -36,12 +36,12 @@
  * Does NOT simplify pathnames with . or .. in them.
  */
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <libgen.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <sys/stat.h>
 
 static char *simplify(const char *str);

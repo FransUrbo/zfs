@@ -28,7 +28,7 @@
 
 #include "libuutil_common.h"
 
-#include <string.h>
+#include <string_zfs.h>
 
 /*
  * We require names of the form:

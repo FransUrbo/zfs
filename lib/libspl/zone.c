@@ -24,7 +24,7 @@
  */
 
 #include <zone.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <errno.h>
 
 zoneid_t

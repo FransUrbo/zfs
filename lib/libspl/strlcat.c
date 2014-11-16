@@ -24,8 +24,8 @@
  * Use is subject to license terms.
  */
 
-#include <string.h>
-#include <sys/types.h>
+#include <string_zfs.h>
+#include <sys/types_zfs.h>
 
 /*
  * Appends src to the dstsize buffer at dst. The append will never

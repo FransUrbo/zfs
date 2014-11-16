@@ -25,10 +25,10 @@
 
 /* Portions Copyright 2010 Robert Milkowski */
 
-#include <sys/types.h>
-#include <sys/param.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
 #include <sys/systm.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/kmem.h>
 #include <sys/pathname.h>
 #include <sys/vnode.h>

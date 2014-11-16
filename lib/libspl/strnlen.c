@@ -24,8 +24,8 @@
  * All rights reserved.  Use is subject to license terms.
  */
 
-#include <string.h>
-#include <sys/types.h>
+#include <string_zfs.h>
+#include <sys/types_zfs.h>
 
 /*
  * Returns the number of non-NULL bytes in string argument,

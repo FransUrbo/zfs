@@ -32,10 +32,10 @@
 #if defined(_KERNEL)
 #include <sys/systm.h>
 #else
-#include <string.h>
+#include <string_zfs.h>
 #endif
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #include <sys/fs/zfs.h>
 #include <sys/int_limits.h>
 #include <sys/nvpair.h>

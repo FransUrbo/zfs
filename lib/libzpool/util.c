@@ -22,10 +22,10 @@
  * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <sys/zfs_context.h>
 #include <sys/avl.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/spa.h>

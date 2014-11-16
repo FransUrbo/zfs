@@ -29,8 +29,8 @@
 
 #include <sys/list.h>
 #include <sys/list_impl.h>
-#include <sys/types.h>
-#include <sys/sysmacros.h>
+#include <sys/types_zfs.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/debug.h>
 
 #define	list_d2l(a, obj) ((list_node_t *)(((char *)obj) + (a)->list_offset))

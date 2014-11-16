@@ -33,7 +33,7 @@
 #else
 #include <stdio.h>
 #include <unistd.h>
-#include <strings.h>
+#include <strings_zfs.h>
 #include <libnvpair.h>
 #include <ctype.h>
 #endif

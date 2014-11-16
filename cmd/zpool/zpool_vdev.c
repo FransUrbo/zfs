@@ -59,7 +59,7 @@
  * 	4. Call libzfs to label any whole disks with an EFI label.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <ctype.h>
 #include <devid.h>
 #include <errno.h>
@@ -70,7 +70,7 @@
 #include <scsi/scsi.h>
 #include <scsi/sg.h>
 #include <stdio.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <unistd.h>
 #include <sys/efi_partition.h>
 #include <sys/stat.h>

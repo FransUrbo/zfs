@@ -30,8 +30,8 @@
 #define	_LIBSPL_SYS_MOUNT_H
 
 #include <sys/mntent.h>
-#include <assert.h>
-#include <string.h>
+#include <assert_zfs.h>
+#include <string_zfs.h>
 #include <stdlib.h>
 
 /*

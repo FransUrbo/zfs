@@ -30,7 +30,7 @@
 #define	_SYS_DSL_USERHOLD_H
 
 #include <sys/nvpair.h>
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

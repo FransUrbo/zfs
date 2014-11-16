@@ -94,7 +94,7 @@
 #include <sys/dmu_objset.h>
 #include <sys/poll.h>
 #include <sys/stat.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
 #include <sys/resource.h>

@@ -27,6 +27,6 @@
 #ifndef _LIBSPL_SYS_DEBUG_H
 #define	_LIBSPL_SYS_DEBUG_H
 
-#include <assert.h>
+#include <assert_zfs.h>
 
 #endif

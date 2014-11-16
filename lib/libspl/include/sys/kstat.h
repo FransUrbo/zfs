@@ -32,8 +32,8 @@
  * Definition of general kernel statistics structures and /dev/kstat ioctls
  */
 
-#include <sys/types.h>
-#include <sys/time.h>
+#include <sys/types_zfs.h>
+#include <sys/time_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

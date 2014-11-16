@@ -40,12 +40,12 @@
  */
 
 #include <sys/inttypes.h>
-#include <sys/types.h>
-#include <sys/param.h>
+#include <sys/types_zfs.h>
+#include <sys/param_zfs.h>
 #include <sys/cred.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 #include <sys/fs/zfs.h>
-#include <sys/uio.h>
+#include <sys/uio_zfs.h>
 
 #ifdef	__cplusplus
 extern "C" {

@@ -22,12 +22,12 @@
  * Copyright (c) 2005, 2010, Oracle and/or its affiliates. All rights reserved.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <fcntl.h>
 #include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <zlib.h>
 #include <sys/signal.h>
 #include <sys/spa.h>
@@ -36,7 +36,7 @@
 #include <sys/zfs_context.h>
 #include <sys/rrwlock.h>
 #include <sys/utsname.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 #include <sys/systeminfo.h>
 
 /*

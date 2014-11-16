@@ -27,7 +27,7 @@
  * Copyright (c) 2012 by Cyril Plisko. All rights reserved.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -38,8 +38,8 @@
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <strings.h>
+#include <string_zfs.h>
+#include <strings_zfs.h>
 #include <unistd.h>
 #include <priv.h>
 #include <pwd.h>

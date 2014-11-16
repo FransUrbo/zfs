@@ -30,7 +30,7 @@
 
 #ifndef __sun__
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <pthread.h>
 
 /*

@@ -29,8 +29,8 @@
 #include <ctype.h>
 #include <errno.h>
 #include <libintl.h>
-#include <string.h>
-#include <sys/types.h>
+#include <string_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <attr.h>

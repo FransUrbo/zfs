@@ -27,8 +27,8 @@
 #define	_LIBZFS_CORE_H
 
 #include <libnvpair.h>
-#include <sys/param.h>
-#include <sys/types.h>
+#include <sys/param_zfs.h>
+#include <sys/types_zfs.h>
 #include <sys/fs/zfs.h>
 
 #ifdef	__cplusplus

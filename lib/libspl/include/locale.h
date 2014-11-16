@@ -30,6 +30,6 @@
 #define	_LIBSPL_LOCALE_H
 
 #include <time.h>
-#include <sys/time.h>
+#include <sys/time_zfs.h>
 
 #endif

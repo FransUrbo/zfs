@@ -34,10 +34,10 @@
  * Interface stability: Committed
  */
 
-#include <sys/types.h>
+#include <sys/types_zfs.h>
 #ifdef	_KERNEL
-#include <sys/param.h>
-#include <sys/sysmacros.h>
+#include <sys/param_zfs.h>
+#include <sys/sysmacros_zfs.h>
 #include <sys/systm.h>
 #include <sys/debug.h>
 #include <sys/kmem.h>

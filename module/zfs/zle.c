@@ -30,8 +30,8 @@
  * If b < n (where n is the compression parameter) then the next b + 1 bytes
  * are literal values.  If b >= n then the next (256 - b + 1) bytes are zero.
  */
-#include <sys/types.h>
-#include <sys/sysmacros.h>
+#include <sys/types_zfs.h>
+#include <sys/sysmacros_zfs.h>
 
 size_t
 zle_compress(void *s_start, void *d_start, size_t s_len, size_t d_len, int n)

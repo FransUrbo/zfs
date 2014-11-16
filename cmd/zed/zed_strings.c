@@ -24,13 +24,13 @@
  * Copyright (C) 2013-2014 Lawrence Livermore National Security, LLC.
  */
 
-#include <assert.h>
+#include <assert_zfs.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string_zfs.h>
 #include <sys/avl.h>
-#include <sys/sysmacros.h>
+#include <sys/sysmacros_zfs.h>
 #include "zed_strings.h"
 
 struct zed_strings {
