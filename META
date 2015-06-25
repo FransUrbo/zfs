@@ -1,7 +1,7 @@
 Meta:         1
 Name:         zfs
 Branch:       1.0
-Version:      0.7.0+nfs+iscsi+smbfs
+Version:      0.7.0+nfs+iscsi+smbfs+nocache
 Release:      1
 Release-Tags: relext
 License:      CDDL
