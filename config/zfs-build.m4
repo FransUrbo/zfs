@@ -6,69 +6,84 @@ AC_DEFUN([ZFS_AC_LICENSE], [
 	AC_MSG_RESULT([$ZFS_META_LICENSE])
 ])
 
+AC_DEFUN([ZFS_AC_DEBUG_ENABLE], [
+	KERNELCPPFLAGS="${KERNELCPPFLAGS} -DDEBUG -Werror"
+	HOSTCFLAGS="${HOSTCFLAGS} -DDEBUG -Werror"
+	DEBUG_CFLAGS="-DDEBUG -Werror"
+	DEBUG_STACKFLAGS="-fstack-check"
+	DEBUG_ZFS="_with_debug"
+	AC_DEFINE(ZFS_DEBUG, 1, [zfs debugging enabled])
+])
+
+AC_DEFUN([ZFS_AC_DEBUG_DISABLE], [
+	KERNELCPPFLAGS="${KERNELCPPFLAGS} -DNDEBUG "
+	HOSTCFLAGS="${HOSTCFLAGS} -DNDEBUG "
+	DEBUG_CFLAGS="-DNDEBUG"
+	DEBUG_STACKFLAGS=""
+	DEBUG_ZFS="_without_debug"
+])
+
 AC_DEFUN([ZFS_AC_DEBUG], [
-	AC_MSG_CHECKING([whether debugging is enabled])
+	AC_MSG_CHECKING([whether assertion support will be enabled])
 	AC_ARG_ENABLE([debug],
 		[AS_HELP_STRING([--enable-debug],
-		[Enable generic debug support @<:@default=no@:>@])],
+		[Enable assertion support @<:@default=no@:>@])],
 		[],
 		[enable_debug=no])
 
-	AS_IF([test "x$enable_debug" = xyes],
-	[
-		KERNELCPPFLAGS="${KERNELCPPFLAGS} -DDEBUG -Werror"
-		HOSTCFLAGS="${HOSTCFLAGS} -DDEBUG -Werror"
-		DEBUG_CFLAGS="-DDEBUG -Werror"
-		DEBUG_STACKFLAGS="-fstack-check"
-		DEBUG_ZFS="_with_debug"
-		AC_DEFINE(ZFS_DEBUG, 1, [zfs debugging enabled])
-	],
-	[
-		KERNELCPPFLAGS="${KERNELCPPFLAGS} -DNDEBUG "
-		HOSTCFLAGS="${HOSTCFLAGS} -DNDEBUG "
-		DEBUG_CFLAGS="-DNDEBUG"
-		DEBUG_STACKFLAGS=""
-		DEBUG_ZFS="_without_debug"
-	])
+	AS_CASE(["x$enable_debug"],
+		["xyes"],
+		[ZFS_AC_DEBUG_ENABLE],
+		["xno"],
+		[ZFS_AC_DEBUG_DISABLE],
+		[AC_MSG_ERROR([Unknown option $enable_debug])])
 
-	AC_SUBST(DEBUG_CFLAGS)
 	AC_SUBST(DEBUG_STACKFLAGS)
 	AC_SUBST(DEBUG_ZFS)
 	AC_MSG_RESULT([$enable_debug])
 ])
 
-AC_DEFUN([ZFS_AC_DEBUG_DMU_TX], [
-	AC_ARG_ENABLE([debug-dmu-tx],
-		[AS_HELP_STRING([--enable-debug-dmu-tx],
-		[Enable dmu tx validation @<:@default=no@:>@])],
+AC_DEFUN([ZFS_AC_DEBUGINFO_KERNEL], [
+	KERNELMAKE_PARAMS="$KERNELMAKE_PARAMS CONFIG_DEBUG_INFO=y"
+	KERNELCPPFLAGS="${KERNELCPPFLAGS} -fno-inline"
+])
+
+AC_DEFUN([ZFS_AC_DEBUGINFO_USER], [
+	DEBUG_CFLAGS="${DEBUG_CFLAGS} -g -fno-inline"
+])
+
+AC_DEFUN([ZFS_AC_DEBUGINFO], [
+	AC_MSG_CHECKING([whether debuginfo support will be forced])
+	AC_ARG_ENABLE([debuginfo],
+		[AS_HELP_STRING([--enable-debuginfo],
+		[Force generation of debuginfo @<:@default=no@:>@])],
 		[],
-		[enable_debug_dmu_tx=no])
+		[enable_debuginfo=no])
 
-	AS_IF([test "x$enable_debug_dmu_tx" = xyes],
-	[
-		KERNELCPPFLAGS="${KERNELCPPFLAGS} -DDEBUG_DMU_TX"
-		DEBUG_DMU_TX="_with_debug_dmu_tx"
-		AC_DEFINE([DEBUG_DMU_TX], [1],
-		[Define to 1 to enabled dmu tx validation])
-	],
-	[
-		DEBUG_DMU_TX="_without_debug_dmu_tx"
-	])
+	AS_CASE(["x$enable_debuginfo"],
+		["xyes"],
+		[ZFS_AC_DEBUGINFO_KERNEL
+		ZFS_AC_DEBUGINFO_USER],
+		["xkernel"],
+		[ZFS_AC_DEBUGINFO_KERNEL],
+		["xuser"],
+		[ZFS_AC_DEBUGINFO_USER],
+		["xno"],
+		[],
+		[AC_MSG_ERROR([Unknown option $enable_debug])])
 
-	AC_SUBST(DEBUG_DMU_TX)
-	AC_MSG_CHECKING([whether dmu tx validation is enabled])
-	AC_MSG_RESULT([$enable_debug_dmu_tx])
+	AC_SUBST(DEBUG_CFLAGS)
+	AC_MSG_RESULT([$enable_debuginfo])
 ])
 
 AC_DEFUN([ZFS_AC_CONFIG_ALWAYS], [
 	ZFS_AC_CONFIG_ALWAYS_NO_UNUSED_BUT_SET_VARIABLE
 	ZFS_AC_CONFIG_ALWAYS_NO_BOOL_COMPARE
+	ZFS_AC_CONFIG_ALWAYS_TOOLCHAIN_SIMD
+	ZFS_AC_CONFIG_ALWAYS_ARCH
 ])
 
 AC_DEFUN([ZFS_AC_CONFIG], [
-	TARGET_ASM_DIR=asm-generic
-	AC_SUBST(TARGET_ASM_DIR)
-
 	ZFS_CONFIG=all
 	AC_ARG_WITH([config],
 		AS_HELP_STRING([--with-config=CONFIG],
@@ -89,8 +104,8 @@ AC_DEFUN([ZFS_AC_CONFIG], [
 	case "$ZFS_CONFIG" in
 		kernel) ZFS_AC_CONFIG_KERNEL ;;
 		user)	ZFS_AC_CONFIG_USER   ;;
-		all)    ZFS_AC_CONFIG_KERNEL
-			ZFS_AC_CONFIG_USER   ;;
+		all)    ZFS_AC_CONFIG_USER
+			ZFS_AC_CONFIG_KERNEL ;;
 		srpm)                        ;;
 		*)
 		AC_MSG_RESULT([Error!])
@@ -99,10 +114,15 @@ AC_DEFUN([ZFS_AC_CONFIG], [
 	esac
 
 	AM_CONDITIONAL([CONFIG_USER],
-		       [test "$ZFS_CONFIG" = user -o "$ZFS_CONFIG" = all])
+	    [test "$ZFS_CONFIG" = user -o "$ZFS_CONFIG" = all])
 	AM_CONDITIONAL([CONFIG_KERNEL],
-		       [test "$ZFS_CONFIG" = kernel -o "$ZFS_CONFIG" = all] &&
-		       [test "x$enable_linux_builtin" != xyes ])
+	    [test "$ZFS_CONFIG" = kernel -o "$ZFS_CONFIG" = all] &&
+	    [test "x$enable_linux_builtin" != xyes ])
+	AM_CONDITIONAL([WANT_DEVNAME2DEVID],
+	    [test "x$user_libudev" = xyes ])
+	AM_CONDITIONAL([CONFIG_QAT],
+	    [test "$ZFS_CONFIG" = kernel -o "$ZFS_CONFIG" = all] &&
+	    [test "x$qatsrc" != x ])
 ])
 
 dnl #
@@ -139,7 +159,7 @@ AC_DEFUN([ZFS_AC_RPM], [
 		AC_MSG_RESULT([$HAVE_RPMBUILD])
 	])
 
-	RPM_DEFINE_COMMON='--define "$(DEBUG_ZFS) 1" --define "$(DEBUG_DMU_TX) 1"'
+	RPM_DEFINE_COMMON='--define "$(DEBUG_ZFS) 1"'
 	RPM_DEFINE_UTIL='--define "_dracutdir $(dracutdir)" --define "_udevdir $(udevdir)" --define "_udevruledir $(udevruledir)" --define "_initconfdir $(DEFAULT_INITCONF_DIR)" $(DEFINE_INITRAMFS)'
 	RPM_DEFINE_KMOD='--define "kernels $(LINUX_VERSION)" --define "require_spldir $(SPL)" --define "require_splobj $(SPL_OBJ)" --define "ksrc $(LINUX)" --define "kobj $(LINUX_OBJ)"'
 	RPM_DEFINE_DKMS=
@@ -266,6 +286,8 @@ AC_DEFUN([ZFS_AC_DEFAULT_PACKAGE], [
 		VENDOR=ubuntu ;
 	elif test -f /etc/debian_version ; then
 		VENDOR=debian ;
+	elif test -f /etc/alpine-release ; then
+		VENDOR=alpine ;
 	else
 		VENDOR= ;
 	fi
@@ -278,6 +300,7 @@ AC_DEFUN([ZFS_AC_DEFAULT_PACKAGE], [
 		redhat)     DEFAULT_PACKAGE=rpm  ;;
 		fedora)     DEFAULT_PACKAGE=rpm  ;;
 		gentoo)     DEFAULT_PACKAGE=tgz  ;;
+		alpine)     DEFAULT_PACKAGE=tgz  ;;
 		arch)       DEFAULT_PACKAGE=tgz  ;;
 		sles)       DEFAULT_PACKAGE=rpm  ;;
 		slackware)  DEFAULT_PACKAGE=tgz  ;;
@@ -299,7 +322,8 @@ AC_DEFUN([ZFS_AC_DEFAULT_PACKAGE], [
 		toss)       DEFAULT_INIT_SCRIPT=redhat ;;
 		redhat)     DEFAULT_INIT_SCRIPT=redhat ;;
 		fedora)     DEFAULT_INIT_SCRIPT=fedora ;;
-		gentoo)     DEFAULT_INIT_SCRIPT=gentoo ;;
+		gentoo)     DEFAULT_INIT_SCRIPT=openrc ;;
+		alpine)     DEFAULT_INIT_SCRIPT=openrc ;;
 		arch)       DEFAULT_INIT_SCRIPT=lsb    ;;
 		sles)       DEFAULT_INIT_SCRIPT=lsb    ;;
 		slackware)  DEFAULT_INIT_SCRIPT=lsb    ;;
@@ -313,6 +337,7 @@ AC_DEFUN([ZFS_AC_DEFAULT_PACKAGE], [
 
 	AC_MSG_CHECKING([default init config direectory])
 	case "$VENDOR" in
+		alpine)     DEFAULT_INITCONF_DIR=/etc/conf.d    ;;
 		gentoo)     DEFAULT_INITCONF_DIR=/etc/conf.d    ;;
 		toss)       DEFAULT_INITCONF_DIR=/etc/sysconfig ;;
 		redhat)     DEFAULT_INITCONF_DIR=/etc/sysconfig ;;

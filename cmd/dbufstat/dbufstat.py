@@ -34,7 +34,7 @@ import errno
 
 bhdr = ["pool", "objset", "object", "level", "blkid", "offset", "dbsize"]
 bxhdr = ["pool", "objset", "object", "level", "blkid", "offset", "dbsize",
-         "meta", "state", "dbholds", "list", "atype", "index", "flags",
+         "meta", "state", "dbholds", "list", "atype", "flags",
          "count", "asize", "access", "mru", "gmru", "mfu", "gmfu", "l2",
          "l2_dattr", "l2_asize", "l2_comp", "aholds", "dtype", "btype",
          "data_bs", "meta_bs", "bsize", "lvls", "dholds", "blocks", "dsize"]
@@ -45,7 +45,7 @@ dxhdr = ["pool", "objset", "object", "dtype", "btype", "data_bs", "meta_bs",
          "bsize", "lvls", "dholds", "blocks", "dsize", "cached", "direct",
          "indirect", "bonus", "spill"]
 dincompat = ["level", "blkid", "offset", "dbsize", "meta", "state", "dbholds",
-             "list", "atype", "index", "flags", "count", "asize", "access",
+             "list", "atype", "flags", "count", "asize", "access",
              "mru", "gmru", "mfu", "gmfu", "l2", "l2_dattr", "l2_asize",
              "l2_comp", "aholds"]
 
@@ -53,7 +53,7 @@ thdr = ["pool", "objset", "dtype", "cached"]
 txhdr = ["pool", "objset", "dtype", "cached", "direct", "indirect",
          "bonus", "spill"]
 tincompat = ["object", "level", "blkid", "offset", "dbsize", "meta", "state",
-             "dbholds", "list", "atype", "index", "flags", "count", "asize",
+             "dbholds", "list", "atype", "flags", "count", "asize",
              "access", "mru", "gmru", "mfu", "gmfu", "l2", "l2_dattr",
              "l2_asize", "l2_comp", "aholds", "btype", "data_bs", "meta_bs",
              "bsize", "lvls", "dholds", "blocks", "dsize"]
@@ -72,7 +72,6 @@ cols = {
     "dbholds":    [7,  1000, "number of holds on buffer"],
     "list":       [4,    -1, "which ARC list contains this buffer"],
     "atype":      [7,    -1, "ARC header type (data or metadata)"],
-    "index":      [5,    -1, "buffer's index into its ARC list"],
     "flags":      [8,    -1, "ARC read flags"],
     "count":      [5,    -1, "ARC data count"],
     "asize":      [7,  1024, "size of this ARC buffer"],
@@ -144,7 +143,7 @@ def detailed_usage():
         sys.stderr.write("%11s : %s\n" % (key, cols[key][2]))
     sys.stderr.write("\n")
 
-    sys.exit(1)
+    sys.exit(0)
 
 
 def usage():
@@ -229,7 +228,8 @@ def print_header():
 
 
 def get_typestring(t):
-    type_strings = ["DMU_OT_NONE",
+    ot_strings = [
+                    "DMU_OT_NONE",
                     # general:
                     "DMU_OT_OBJECT_DIRECTORY",
                     "DMU_OT_OBJECT_ARRAY",
@@ -292,15 +292,39 @@ def get_typestring(t):
                     "DMU_OT_DEADLIST_HDR",
                     "DMU_OT_DSL_CLONES",
                     "DMU_OT_BPOBJ_SUBOBJ"]
+    otn_strings = {
+                    0x80: "DMU_OTN_UINT8_DATA",
+                    0xc0: "DMU_OTN_UINT8_METADATA",
+                    0x81: "DMU_OTN_UINT16_DATA",
+                    0xc1: "DMU_OTN_UINT16_METADATA",
+                    0x82: "DMU_OTN_UINT32_DATA",
+                    0xc2: "DMU_OTN_UINT32_METADATA",
+                    0x83: "DMU_OTN_UINT64_DATA",
+                    0xc3: "DMU_OTN_UINT64_METADATA",
+                    0x84: "DMU_OTN_ZAP_DATA",
+                    0xc4: "DMU_OTN_ZAP_METADATA",
+                    0xa0: "DMU_OTN_UINT8_ENC_DATA",
+                    0xe0: "DMU_OTN_UINT8_ENC_METADATA",
+                    0xa1: "DMU_OTN_UINT16_ENC_DATA",
+                    0xe1: "DMU_OTN_UINT16_ENC_METADATA",
+                    0xa2: "DMU_OTN_UINT32_ENC_DATA",
+                    0xe2: "DMU_OTN_UINT32_ENC_METADATA",
+                    0xa3: "DMU_OTN_UINT64_ENC_DATA",
+                    0xe3: "DMU_OTN_UINT64_ENC_METADATA",
+                    0xa4: "DMU_OTN_ZAP_ENC_DATA",
+                    0xe4: "DMU_OTN_ZAP_ENC_METADATA"}
 
     # If "-rr" option is used, don't convert to string representation
     if raw > 1:
         return "%i" % t
 
     try:
-        return type_strings[t]
-    except IndexError:
-        return "%i" % t
+        if t < len(ot_strings):
+            return ot_strings[t]
+        else:
+            return otn_strings[t]
+    except (IndexError, KeyError):
+        return "(UNKNOWN)"
 
 
 def get_compstring(c):
@@ -387,9 +411,9 @@ def update_dict(d, k, line, labels):
 
 def print_dict(d):
     print_header()
-    for pool in d.keys():
-        for objset in d[pool].keys():
-            for v in d[pool][objset].values():
+    for pool in list(d.keys()):
+        for objset in list(d[pool].keys()):
+            for v in list(d[pool][objset].values()):
                 print_values(v)
 
 
@@ -577,6 +601,7 @@ def main():
 
     if tflag:
         print_dict(types_build_dict(sys.stdin))
+
 
 if __name__ == '__main__':
     main()

@@ -56,6 +56,66 @@ static int update_zfs_shares(sa_handle_impl_t impl_handle, const char *proto);
 static int fstypes_count;
 static sa_fstype_t *fstypes;
 
+/*
+ * Invokes the specified callback function for each Solaris share option
+ * listed in the specified string.
+ */
+int
+foreach_shareopt(const char *shareopts,
+    shareopt_callback_t callback, void *cookie)
+{
+	char *shareopts_dup, *opt, *cur, *value;
+	int was_nul, rc;
+
+	if (shareopts == NULL)
+		return (SA_OK);
+
+	shareopts_dup = strdup(shareopts);
+
+	if (shareopts_dup == NULL)
+		return (SA_NO_MEMORY);
+
+	opt = shareopts_dup;
+	was_nul = 0;
+
+	while (1) {
+		cur = opt;
+
+		while (*cur != ',' && *cur != '\0')
+			cur++;
+
+		if (*cur == '\0')
+			was_nul = 1;
+
+		*cur = '\0';
+
+		if (cur > opt) {
+			value = strchr(opt, '=');
+
+			if (value != NULL) {
+				*value = '\0';
+				value++;
+			}
+
+			rc = callback(opt, value, cookie);
+
+			if (rc != SA_OK) {
+				free(shareopts_dup);
+				return (rc);
+			}
+		}
+
+		opt = cur + 1;
+
+		if (was_nul)
+			break;
+	}
+
+	free(shareopts_dup);
+
+	return (0);
+}
+
 sa_fstype_t *
 register_fstype(const char *name, const sa_share_ops_t *ops)
 {
@@ -108,12 +168,13 @@ libshare_init(void)
 }
 
 static void
-parse_sharetab(sa_handle_impl_t impl_handle) {
+parse_sharetab(sa_handle_impl_t impl_handle)
+{
 	FILE *fp;
 	char line[512];
 	char *eol, *pathname, *resource, *fstype, *options, *description;
 
-	fp = fopen("/etc/dfs/sharetab", "r");
+	fp = fopen(ZFS_SHARETAB, "r");
 
 	if (fp == NULL)
 		return;
@@ -170,7 +231,7 @@ update_sharetab(sa_handle_impl_t impl_handle)
 	sa_share_impl_t impl_share;
 	int temp_fd;
 	FILE *temp_fp;
-	char tempfile[] = "/etc/dfs/sharetab.XXXXXX";
+	char tempfile[] = ZFS_SHARETAB".XXXXXX";
 	sa_fstype_t *fstype;
 	const char *resource;
 
@@ -215,7 +276,7 @@ update_sharetab(sa_handle_impl_t impl_handle)
 	fsync(temp_fd);
 	fclose(temp_fp);
 
-	rename(tempfile, "/etc/dfs/sharetab");
+	(void) rename(tempfile, ZFS_SHARETAB);
 }
 
 typedef struct update_cookie_s {
@@ -498,7 +559,7 @@ sa_enable_share(sa_share_t share, char *protocol)
 
 #ifdef DEBUG
 	fprintf(stderr, "sa_enable_share: share->sharepath=%s, protocol=%s\n",
-		impl_share->sharepath, protocol);
+	    impl_share->sharepath, protocol);
 #endif
 
 	assert(impl_share->handle != NULL);
@@ -539,7 +600,7 @@ sa_disable_share(sa_share_t share, char *protocol)
 
 #ifdef DEBUG
 	fprintf(stderr, "sa_disable_share: share->sharepath=%s, protocol=%s\n",
-		impl_share->sharepath, protocol);
+	    impl_share->sharepath, protocol);
 #endif
 
 	ret = SA_OK;
@@ -697,7 +758,7 @@ sa_parse_legacy_options(sa_group_t group, char *options, char *proto)
 
 #ifdef DEBUG
 	fprintf(stderr, "sa_parse_legacy_options: options=%s, proto=%s\n",
-		options, proto);
+	    options, proto);
 #endif
 
 	fstype = fstypes;
@@ -759,7 +820,8 @@ alloc_share(const char *sharepath)
 }
 
 static void
-free_share(sa_share_impl_t impl_share) {
+free_share(sa_share_impl_t impl_share)
+{
 	sa_fstype_t *fstype;
 
 	fstype = fstypes;
